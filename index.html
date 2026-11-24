@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4a3c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23b3233b'/%3E%3Crect x='44' y='0' width='12' height='100' fill='%231f4a3c'/%3E%3Crect x='0' y='44' width='100' height='12' fill='%231f4a3c'/%3E%3C/svg%3E">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>Secret Santa 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column of "gift tag" panels on a pine ground; reveal view is a single tag you unwrap. */
+:root{
+  --bg:#eef3f1; --panel:#ffffff; --ink:#14251f; --muted:#5b6d66; --line:#d3ddd9;
+  --pine:#1f4a3c; --berry:#b3233b; --berry-ink:#ffffff; --gold:#b98a2e; --soft:#e3ece8; --danger:#a3261b;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1a17; --panel:#17241f; --ink:#e7efec; --muted:#9db0a8; --line:#2b3c36;
+  --pine:#7fc3a6; --berry:#e2546b; --berry-ink:#1a0a0e; --gold:#e0b65c; --soft:#1e2e28; --danger:#ff8a7a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1a17; --panel:#17241f; --ink:#e7efec; --muted:#9db0a8; --line:#2b3c36;
+  --pine:#7fc3a6; --berry:#e2546b; --berry-ink:#1a0a0e; --gold:#e0b65c; --soft:#1e2e28; --danger:#ff8a7a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);}
+.wrap{max-width:720px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+header h1{font:800 clamp(30px,6vw,44px)/1.05 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+header h1 span{color:var(--berry)}
+header p{margin:8px 0 0;color:var(--muted);max-width:60ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel h2{font:600 19px/1.2 var(--display);margin:0;display:flex;align-items:baseline;gap:10px}
+.panel h2 small{font:500 12px var(--body);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.hint{color:var(--muted);font-size:13px;margin:0}
+.grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+@media (max-width:560px){.grid3{grid-template-columns:1fr 1fr}.grid3 .full{grid-column:1/-1}}
+label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);min-width:0}
+input,select{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%;min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row > input,.row > select{flex:1 1 140px}
+button{font:600 14px var(--body);border-radius:9px;padding:9px 14px;border:1px solid var(--line);background:var(--soft);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--pine)}
+button.primary{background:var(--berry);border-color:var(--berry);color:var(--berry-ink)}
+button.primary:hover{filter:brightness(1.07)}
+button.ghost{background:transparent}
+button.link{background:none;border:none;padding:4px 6px;color:var(--muted);font-weight:500}
+button.link:hover{color:var(--danger)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:4px 4px 4px 12px;font-weight:500}
+.chip button{border:none;background:none;padding:2px 8px;color:var(--muted);font-size:16px;line-height:1}
+.chip button:hover{color:var(--danger)}
+.example{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:1px 8px}
+.excl{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.excl li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px;background:var(--soft);border-radius:9px}
+.err{color:var(--danger);font-weight:500;margin:0}
+.results{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.results li{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.results .who{font-weight:600;min-width:0}
+.results .to{color:var(--muted);font-size:13px}
+.results .code{font:500 12px ui-monospace,Menlo,Consolas,monospace;color:var(--muted);grid-column:1/-1;word-break:break-all}
+.results .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-weight:500;font-size:14px}
+.confirm{background:var(--soft);border:1px dashed var(--danger);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px}
+/* reveal */
+.reveal{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center}
+.tag{position:relative;width:min(380px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:34px 26px 28px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.tag::before{content:"";position:absolute;top:14px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;border:2px solid var(--line);background:var(--bg)}
+.tag .eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:10px}
+.tag .name{font:800 clamp(34px,9vw,48px)/1.05 var(--display);color:var(--berry);margin:0;word-break:break-word}
+.tag .meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.tag .meta span{background:var(--soft);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
+.wrapcover{position:absolute;inset:0;border-radius:18px;background:repeating-linear-gradient(135deg,var(--berry) 0 18px,var(--pine) 18px 36px);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#fff;font:700 18px var(--display);transition:transform .5s ease,opacity .5s ease}
+.wrapcover span{background:var(--panel);color:var(--ink);padding:10px 18px;border-radius:999px}
+.wrapcover.open{transform:translateY(-110%) rotate(-6deg);opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.wrapcover{transition:none}}
+.foot{color:var(--muted);font-size:13px;text-align:center}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// Linkul public al paginii, completat după publicare.
+const SHARE_URL = location.origin + location.pathname;
+
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const STORE = 'secret-santa-2026';
+const EXAMPLE = {event:'Crăciun în familie 2026', budget:'150', date:'2026-12-24',
+  people:['Ana','Mihai','Ioana','Radu','Elena','Andrei'], exclusions:[['Ana','Mihai'],['Ioana','Radu']], example:true, draw:null};
+
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE)); if(s && Array.isArray(s.people)) return s; }catch(e){} return structuredClone(EXAMPLE); }
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
+let state = load();
+let ui = {showPairs:false, confirmPairs:false, confirmReset:false, error:''};
+
+// ---- encoding: giver|receiver|budget|date|event -> obfuscated base32 (a-z2-7) ----
+const KEY = [83,97,110,116,97,50,48,50,54,42,77,101,114,114,121];
+const B32 = 'abcdefghijklmnopqrstuvwxyz234567';
+function b32enc(bytes){ let bits=0,val=0,out=''; for(const b of bytes){ val=(val<<8)|b; bits+=8; while(bits>=5){ out+=B32[(val>>>(bits-5))&31]; bits-=5; } } if(bits>0) out+=B32[(val<<(5-bits))&31]; return out; }
+function b32dec(str){ let bits=0,val=0; const out=[]; for(const ch of str){ const i=B32.indexOf(ch); if(i<0) return null; val=(val<<5)|i; bits+=5; if(bits>=8){ out.push((val>>>(bits-8))&255); bits-=8; } } return new Uint8Array(out); }
+function encode(fields){
+  const data = new TextEncoder().encode(fields.join('\u001f'));
+  const salt = Math.floor(Math.random()*256);
+  let sum = salt; const out = [salt];
+  data.forEach((b,i)=>{ sum=(sum+b)&255; out.push(b ^ KEY[i%KEY.length] ^ ((salt + i*73)&255)); });
+  out.push(sum);
+  return b32enc(out);
+}
+function decode(code){
+  const bytes = b32dec(code.trim().toLowerCase().replace(/^#?s/,'').replace(/[^a-z2-7]/g,''));
+  if(!bytes || bytes.length<3) return null;
+  const salt = bytes[0], body = bytes.slice(1,-1), check = bytes[bytes.length-1];
+  let sum = salt; const data = body.map((b,i)=>{ const v = b ^ KEY[i%KEY.length] ^ ((salt + i*73)&255); sum=(sum+v)&255; return v; });
+  if(sum!==check) return null;
+  try{ const f = new TextDecoder('utf-8',{fatal:true}).decode(data).split('\u001f'); return f.length>=2 ? {giver:f[0],receiver:f[1],budget:f[2]||'',date:f[3]||'',event:f[4]||''} : null; }catch(e){ return null; }
+}
+
+// ---- draw: random derangement that respects exclusions ----
+function blocked(a,b){ return a===b || state.exclusions.some(([x,y]) => (x===a&&y===b)||(x===b&&y===a)); }
+function draw(){
+  const p = state.people;
+  for(let t=0;t<20000;t++){
+    const r = [...p];
+    for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; }
+    if(p.every((g,i)=>!blocked(g,r[i]))) return p.map((g,i)=>({giver:g, receiver:r[i]}));
+  }
+  return null;
+}
+
+function fmtDate(d){ if(!d) return ''; const [y,m,day]=d.split('-'); const luni=['ianuarie','februarie','martie','aprilie','mai','iunie','iulie','august','septembrie','octombrie','noiembrie','decembrie']; return `${+day} ${luni[+m-1]} ${y}`; }
+function linkFor(code){ return SHARE_URL ? `${SHARE_URL}#s${code}` : ''; }
+function messageFor(pair){
+  const link = linkFor(pair.code);
+  const extra = [state.budget?`buget ${state.budget} lei`:'', state.date?`schimbul pe ${fmtDate(state.date)}`:''].filter(Boolean).join(', ');
+  return `Salut, ${pair.giver}! Tragerea la Secret Santa (${state.event||'Crăciun 2026'}) s-a făcut` + (extra?` (${extra})`:'') + `. ` +
+    (link ? `Deschide linkul ca să afli cui îi faci cadou: ${link}` : `Codul tău secret este: s${pair.code}. Deschide pagina Secret Santa și introdu-l acolo.`) + ` Nu spune nimănui!`;
+}
+
+let toastTimer;
+function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.hidden=true,2200); }
+async function copy(text){ try{ await navigator.clipboard.writeText(text); toast('Copiat'); }catch(e){ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copiat');}catch(_){ toast('Selectează și copiază manual'); } ta.remove(); } }
+
+// ---- views ----
+function renderOrganizer(){
+  const s = state;
+  const opts = s.people.map(p=>`<option>${esc(p)}</option>`).join('');
+  $('#app').innerHTML = `
+  <header>
+    <h1>Secret <span>Santa</span> 2026</h1>
+    <p>Adaugă participanții, alege cine nu are voie să se tragă între ei, apoi fă tragerea. Fiecare primește un link care îi arată doar persoana căreia îi face cadou.</p>
+  </header>
+
+  <section class="panel">
+    <h2>Evenimentul ${s.example?'<span class="example">exemplu</span>':''}</h2>
+    <div class="grid3">
+      <label class="full">Nume eveniment<input id="ev" value="${esc(s.event)}" placeholder="Crăciun în familie"></label>
+      <label>Buget (lei)<input id="bud" inputmode="numeric" value="${esc(s.budget)}" placeholder="150"></label>
+      <label>Data schimbului<input id="dt" type="date" value="${esc(s.date)}"></label>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Participanți <small>${s.people.length} persoane</small></h2>
+    <form class="row" id="addForm">
+      <input id="newName" placeholder="Nume participant" autocomplete="off">
+      <button class="primary" type="submit">Adaugă</button>
+    </form>
+    <div class="chips">${s.people.map((p,i)=>`<span class="chip">${esc(p)}<button data-rm="${i}" aria-label="Șterge ${esc(p)}">×</button></span>`).join('') || '<p class="hint">Niciun participant încă.</p>'}</div>
+    ${s.example?'<div class="row"><p class="hint" style="flex:1">Numele de mai sus sunt doar exemple.</p><button class="ghost" id="clearEx">Golește exemplele</button></div>':''}
+  </section>
+
+  <section class="panel">
+    <h2>Excluderi <small>nu se trag între ei</small></h2>
+    <p class="hint">De exemplu partenerii de cuplu sau frații care își fac oricum cadouri.</p>
+    <form class="row" id="exForm">
+      <select id="exA" aria-label="Prima persoană">${opts}</select>
+      <select id="exB" aria-label="A doua persoană">${opts}</select>
+      <button type="submit">Adaugă excludere</button>
+    </form>
+    ${s.exclusions.length?`<ul class="excl">${s.exclusions.map(([a,b],i)=>`<li><span>${esc(a)} ↔ ${esc(b)}</span><button class="link" data-rmex="${i}">Șterge</button></li>`).join('')}</ul>`:''}
+  </section>
+
+  <section class="panel">
+    <h2>Tragerea la sorți</h2>
+    ${ui.error?`<p class="err">${esc(ui.error)}</p>`:''}
+    ${!s.draw ? `
+      <p class="hint">Nimeni nu se trage pe sine și excluderile sunt respectate. Perechile rămân ascunse, ca să poți participa și tu.</p>
+      <div class="row"><button class="primary" id="doDraw">Fă tragerea</button></div>
+    ` : `
+      <p class="hint">Trimite fiecăruia mesajul lui (WhatsApp, SMS, email). ${SHARE_URL?'':'Linkurile apar după ce pagina e publicată; până atunci fiecare primește un cod.'}</p>
+      <ul class="results">${s.draw.map((d,i)=>`
+        <li>
+          <div class="who">${esc(d.giver)}${ui.showPairs?` <span class="to">→ ${esc(d.receiver)}</span>`:''}</div>
+          <div class="acts"><button data-copy="${i}">Copiază mesajul</button>${SHARE_URL?`<button class="ghost" data-copylink="${i}">Doar linkul</button>`:''}</div>
+          <div class="code">cod: s${esc(d.code)}</div>
+        </li>`).join('')}</ul>
+      ${ui.confirmPairs?`<div class="confirm"><p class="err">Dacă participi și tu, vei vedea cine pe cine a tras.</p><div class="row"><button id="pairsYes">Arată perechile</button><button class="ghost" id="pairsNo">Renunță</button></div></div>`:''}
+      ${ui.confirmReset?`<div class="confirm"><p class="err">Tragerea nouă anulează codurile deja trimise.</p><div class="row"><button id="resetYes">Refă tragerea</button><button class="ghost" id="resetNo">Renunță</button></div></div>`:''}
+      <div class="row">
+        <button class="ghost" id="togglePairs">${ui.showPairs?'Ascunde perechile':'Arată perechile'}</button>
+        <button class="ghost" id="reset">Refă tragerea</button>
+      </div>
+    `}
+  </section>
+
+  <section class="panel">
+    <h2>Ai primit un cod?</h2>
+    <form class="row" id="codeForm">
+      <input id="codeIn" placeholder="ex. sabc123…" autocomplete="off">
+      <button type="submit">Vezi perechea</button>
+    </form>
+    <p class="err" id="codeErr" hidden>Codul nu e valid. Verifică să-l fi copiat complet.</p>
+  </section>
+  <p class="foot">Datele organizatorului rămân doar în acest browser.</p>`;
+  bindOrganizer();
+}
+
+function invalidate(){ if(state.draw){ state.draw=null; ui.showPairs=false; } }
+function bindOrganizer(){
+  const s = state;
+  const bindField = (id,key) => $('#'+id).addEventListener('input', e => { s[key]=e.target.value; if(s.draw) s.draw.forEach(d=>d.code=encode([d.giver,d.receiver,s.budget,s.date,s.event])); save(); });
+  bindField('ev','event'); bindField('bud','budget'); bindField('dt','date');
+  $('#addForm').addEventListener('submit', e => { e.preventDefault(); const n=$('#newName').value.trim().replace(/\s+/g,' ');
+    if(!n) return; if(s.people.some(p=>p.toLowerCase()===n.toLowerCase())){ toast('Numele există deja'); return; }
+    s.people.push(n); invalidate(); ui.error=''; save(); renderOrganizer(); $('#newName').focus(); });
+  document.querySelectorAll('[data-rm]').forEach(b=>b.addEventListener('click',()=>{ const n=s.people.splice(+b.dataset.rm,1)[0]; s.exclusions=s.exclusions.filter(x=>!x.includes(n)); invalidate(); save(); renderOrganizer(); }));
+  $('#clearEx')?.addEventListener('click',()=>{ s.people=[]; s.exclusions=[]; s.example=false; s.event=''; s.draw=null; save(); renderOrganizer(); });
+  $('#exForm').addEventListener('submit', e => { e.preventDefault(); const a=$('#exA').value, b=$('#exB').value;
+    if(!a||!b||a===b){ toast('Alege două persoane diferite'); return; }
+    if(s.exclusions.some(([x,y])=>(x===a&&y===b)||(x===b&&y===a))){ toast('Excluderea există deja'); return; }
+    s.exclusions.push([a,b]); invalidate(); save(); renderOrganizer(); });
+  document.querySelectorAll('[data-rmex]').forEach(b=>b.addEventListener('click',()=>{ s.exclusions.splice(+b.dataset.rmex,1); invalidate(); save(); renderOrganizer(); }));
+  $('#doDraw')?.addEventListener('click', doDraw);
+  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>copy(messageFor(s.draw[+b.dataset.copy]))));
+  document.querySelectorAll('[data-copylink]').forEach(b=>b.addEventListener('click',()=>copy(linkFor(s.draw[+b.dataset.copylink].code))));
+  $('#togglePairs')?.addEventListener('click',()=>{ if(ui.showPairs){ ui.showPairs=false; } else { ui.confirmPairs=true; } renderOrganizer(); });
+  $('#pairsYes')?.addEventListener('click',()=>{ ui.showPairs=true; ui.confirmPairs=false; renderOrganizer(); });
+  $('#pairsNo')?.addEventListener('click',()=>{ ui.confirmPairs=false; renderOrganizer(); });
+  $('#reset')?.addEventListener('click',()=>{ ui.confirmReset=true; renderOrganizer(); });
+  $('#resetYes')?.addEventListener('click',()=>{ ui.confirmReset=false; s.draw=null; ui.showPairs=false; doDraw(); });
+  $('#resetNo')?.addEventListener('click',()=>{ ui.confirmReset=false; renderOrganizer(); });
+  $('#codeForm').addEventListener('submit', e => { e.preventDefault(); const r=decode($('#codeIn').value); if(r) renderReveal(r, true); else $('#codeErr').hidden=false; });
+}
+
+function doDraw(){
+  const s = state; ui.error='';
+  if(s.people.length<3){ ui.error='Ai nevoie de cel puțin 3 participanți.'; return renderOrganizer(); }
+  const res = draw();
+  if(!res){ ui.error='Nu există nicio tragere posibilă cu aceste excluderi. Scoate una sau două excluderi și încearcă din nou.'; return renderOrganizer(); }
+  s.draw = res.map(d=>({...d, code: encode([d.giver,d.receiver,s.budget,s.date,s.event])}));
+  save(); renderOrganizer(); toast('Tragerea s-a făcut');
+}
+
+function renderReveal(r, fromOrganizer){
+  const meta = [r.budget?`Buget ${esc(r.budget)} lei`:'', r.date?esc(fmtDate(r.date)):''].filter(Boolean).map(m=>`<span>${m}</span>`).join('');
+  $('#app').innerHTML = `
+  <div class="reveal">
+    <header><h1>Secret <span>Santa</span></h1><p>${esc(r.event||'Crăciun 2026')}</p></header>
+    <div class="tag">
+      <div class="eyebrow">${esc(r.giver)}, tu îi faci cadou lui / ei</div>
+      <p class="name">${esc(r.receiver)}</p>
+      ${meta?`<div class="meta">${meta}</div>`:''}
+      <button class="wrapcover" id="unwrap"><span>Apasă ca să deschizi</span></button>
+    </div>
+    <p class="foot">Păstrează secretul până la schimbul de cadouri.</p>
+    ${fromOrganizer?'<button class="ghost" id="back">Înapoi</button>':''}
+  </div>`;
+  $('#unwrap').addEventListener('click', e => e.currentTarget.classList.add('open'));
+  $('#back')?.addEventListener('click', renderOrganizer);
+}
+
+function route(){
+  const h = location.hash.replace(/^#/,'');
+  if(/^s[a-z2-7]{6,}$/.test(h)){ const r = decode(h); if(r) return renderReveal(r, false); }
+  renderOrganizer();
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+
+</body>
+</html>
