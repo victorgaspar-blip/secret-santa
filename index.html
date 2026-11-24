@@ -79,10 +79,24 @@ button.link:hover{color:var(--danger)}
 .wrapcover.open{transform:translateY(-110%) rotate(-6deg);opacity:0;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.wrapcover{transition:none}}
 .foot{color:var(--muted);font-size:13px;text-align:center}
+
+/* fundal cu poze care se schimbă */
+.slides{position:fixed;inset:0;z-index:-1;background:#0f1a17}
+.slides div{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.6s ease;transform:scale(1.04)}
+.slides div.on{opacity:1;animation:kb 9s ease-out forwards}
+.slides::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,16,13,.45),rgba(8,16,13,.7))}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.slides div{transition:none}.slides div.on{animation:none}}
+body{background:transparent}
+header h1,header p,.reveal header h1,.reveal header p,.foot{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+header h1 span{color:#ff7a8f}
+.panel,.tag{box-shadow:0 10px 30px rgba(0,0,0,.25)}
+
 </style>
 
 </head>
 <body>
+<div class="slides" id="slides" aria-hidden="true"></div>
 <div class="wrap" id="app"></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -283,6 +297,13 @@ function route(){
   renderOrganizer();
 }
 window.addEventListener('hashchange', route);
+// fundal: pozele se schimbă la fiecare 6 secunde
+(function(){
+  const box=document.getElementById('slides'); const n=5; const els=[];
+  for(let i=1;i<=n;i++){ const d=document.createElement('div'); d.style.backgroundImage=`url(bg/${i}.jpg)`; box.appendChild(d); els.push(d); }
+  let k=0; els[0].classList.add('on');
+  setInterval(()=>{ els[k].classList.remove('on'); k=(k+1)%n; void els[k].offsetWidth; els[k].classList.add('on'); },6000);
+})();
 route();
 </script>
 
