@@ -102,6 +102,8 @@ header h1 span{color:#ff7a8f}
 
 <script>
 // Linkul public al paginii, completat după publicare.
+// Bugetul stabilit de grup, afișat când linkul nu are buget propriu.
+const DEFAULT_BUDGET = "50 €";
 const SHARE_URL = location.origin + location.pathname;
 
 const $ = (s, r=document) => r.querySelector(s);
@@ -274,7 +276,7 @@ function doDraw(){
 }
 
 function renderReveal(r, fromOrganizer){
-  const meta = [r.budget?`Buget ${esc(r.budget)} lei`:'', r.date?esc(fmtDate(r.date)):''].filter(Boolean).map(m=>`<span>${m}</span>`).join('');
+  const meta = [r.budget?`Buget ${esc(r.budget)} lei`:`Buget ${DEFAULT_BUDGET}`, r.date?esc(fmtDate(r.date)):''].filter(Boolean).map(m=>`<span>${m}</span>`).join('');
   $('#app').innerHTML = `
   <div class="reveal">
     <header><h1>Secret <span>Santa</span></h1><p>${esc(r.event||'Crăciun 2026')}</p></header>
